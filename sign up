@@ -1,0 +1,292 @@
+package project_Automation;
+
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.Select;
+
+public class TestData {
+	//Declaration
+
+	@FindBy(xpath="//input[@name='firstname']")private WebElement fName;
+	
+	@FindBy(xpath="//input[@name='lastname']")private WebElement lName;
+	
+	@FindBy(xpath="//input[@name='reg_email__']")private WebElement email;
+	
+	@FindBy(xpath="//input[@name='reg_passwd__']")private WebElement newPass;
+	
+	@FindBy(xpath="//select[@name='birthday_day']")private WebElement Day;
+	
+	@FindBy(xpath="//select[@name='birthday_month']")private WebElement Month;
+	
+	@FindBy(xpath="//select[@name='birthday_year']")private WebElement Year;
+	
+	@FindBy(xpath="(//input[@type='radio'])[1]")private WebElement FemaleRadioBtn;
+
+	@FindBy(xpath="(//input[@type='radio'])[2]")private WebElement MaleRadioBtn;
+	
+	@FindBy(xpath="//button[@name='websubmit']")private WebElement SubmitBtn;
+	
+	//Initialization
+	
+	TestData(WebDriver driver){
+		
+		PageFactory.initElements(driver, this);
+	}
+	
+	//usage
+	
+	public void enterFirstName(String name) {
+		fName.sendKeys(name);
+		
+	}
+
+	public void enterLastName(String name) {
+		lName.sendKeys(name);
+		
+	}
+	public void enterEmailID(String mail) {
+		email.sendKeys(mail);
+		
+	}
+	public void enterPassword(String pass) {
+		newPass.sendKeys(pass);
+		
+	}
+	public void selectDay(String day) {
+		Select s1=new Select(Day);
+		s1.selectByValue(day);
+	}
+	public void selectMonth(String month) {
+		Select s2=new Select(Month);
+		s2.selectByVisibleText(month);
+
+	}
+	public void selectYear(String year) {
+		Select s3=new Select(Year);
+		s3.selectByVisibleText(year);
+		
+	}
+	public void ClickOnRadioF() {
+		FemaleRadioBtn.click();
+		
+	}
+	public void ClickOnRadioM() {
+		MaleRadioBtn.click();
+		
+	}
+	public void ClickOnSignUp() {
+		SubmitBtn.click();
+	}
+
+}
+Utility class:
+package project_Automation;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import org.apache.poi.EncryptedDocumentException;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import pom.Config;
+
+public class UtilityClass {
+
+public String readExcelData(int row, int col) throws EncryptedDocumentException,                     IOException	{
+		
+		
+		FileInputStream ff=new FileInputStream(Config.excelData);
+		
+		Sheet sht = WorkbookFactory.create(ff).getSheet("Facebook");
+		
+		String data = sht.getRow(row).getCell(col).getStringCellValue();
+		
+		return data;
+}
+package project_Automation;
+
+import java.io.IOException;
+import org.apache.poi.EncryptedDocumentException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+public class TestCase {
+	
+	WebDriver driver;                 //Global variable
+	 UtilityClass utl;
+	 TestData data;
+	
+	@BeforeClass
+	public void OpenBrowser() {
+		
+		BaseClass base=new BaseClass();                 //Base calss object
+		base.driverInit();
+		
+		  driver = new ChromeDriver();	    
+		  
+		   utl=new UtilityClass();                        //Utility class object
+		   
+		    data=new TestData(driver);
+		       
+	}
+
+	@AfterClass
+	public void CloseBrowser() {
+		
+		driver.quit();
+	}
+	
+	@BeforeMethod
+	public void LoginToApp() {
+	
+		driver.get(Configuration.appUrl1);
+	}
+	
+	@AfterMethod
+	public void RefreshPage() throws InterruptedException {
+	
+	driver.navigate().refresh();
+	
+	Thread.sleep(1000);
+		
+	}	
+
+	@Test(priority=2,enabled=false)
+	public void SignUpTC01() throws EncryptedDocumentException, IOException {
+		
+		data.enterFirstName(utl.readExcelData(1, 0));
+		data.enterLastName(utl.readExcelData(1, 1));
+		data.enterEmailID(utl.readExcelData(1, 2));
+		data.enterPassword(utl.readExcelData(1, 3));
+		data.selectDay(utl.readExcelData(1, 4));
+		data.selectMonth(utl.readExcelData(1, 5));
+		data.selectYear(utl.readExcelData(1, 6));
+		data.ClickOnRadioF();
+		data.ClickOnSignUp();  
+		
+		}
+	
+	@Test(priority=-1)
+	public void SignUpTC02() throws EncryptedDocumentException, IOException {
+		
+		data.enterFirstName(utl.readExcelData(2, 0));
+		data.enterLastName(utl.readExcelData(2, 1));
+		data.enterEmailID(utl.readExcelData(2, 2));
+		data.enterPassword(utl.readExcelData(2, 3));
+		data.selectDay(utl.readExcelData(2, 4));
+		data.selectMonth(utl.readExcelData(2, 5));
+		data.selectYear(utl.readExcelData(2, 6));
+		data.ClickOnRadioF();
+		data.ClickOnSignUp();  
+		
+		}
+	@Test(priority=1)
+	public void SignUpTC03() throws EncryptedDocumentException, IOException {
+		
+		data.enterFirstName(utl.readExcelData(3, 0));
+		data.enterLastName(utl.readExcelData(3, 1));
+		data.enterEmailID(utl.readExcelData(3, 2));
+		data.enterPassword(utl.readExcelData(3, 3));
+		data.selectDay(utl.readExcelData(3, 4));
+		data.selectMonth(utl.readExcelData(3, 5));
+		data.selectYear(utl.readExcelData(3, 6));
+		data.ClickOnRadioF();
+		data.ClickOnSignUp();  
+		
+		}
+	@Test(priority=3)
+	public void SignUpTC04() throws EncryptedDocumentException, IOException {
+		
+		data.enterFirstName(utl.readExcelData(4, 0));
+		data.enterLastName(utl.readExcelData(4, 1));
+		data.enterEmailID(utl.readExcelData(4, 2));
+		data.enterPassword(utl.readExcelData(4, 3));
+		data.selectDay(utl.readExcelData(4,4));
+		data.selectMonth(utl.readExcelData(4, 5));
+		data.selectYear(utl.readExcelData(4, 6));
+		data.ClickOnRadioF();
+		data.ClickOnSignUp();  
+		
+		}
+	@Test
+	public void SignUpTC05() throws EncryptedDocumentException, IOException {
+		
+		data.enterFirstName(utl.readExcelData(5, 0));
+		data.enterLastName(utl.readExcelData(5, 1));
+		data.enterEmailID(utl.readExcelData(5, 2));
+		data.enterPassword(utl.readExcelData(5, 3));
+		data.selectDay(utl.readExcelData(5, 4));
+		data.selectMonth(utl.readExcelData(5, 5));
+		data.selectYear(utl.readExcelData(5, 6));
+		data.ClickOnRadioF();
+		data.ClickOnSignUp();  
+		
+		}
+}
+	
+	
+
+Base class
+package project_Automation;
+
+import org.apache.xmlbeans.impl.xb.xsdschema.Public;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+public class BaseClass {
+	
+	public  WebDriver driverInit() {
+		
+		System.setProperty("webdriver.chrome.driver", Configuration.driverPath);
+		WebDriver driver=new ChromeDriver();
+		
+		return driver;
+		}
+
+}
+	
+
+
+	
+	<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Suite">
+  <test thread-count="5" name="Test">
+    <classes>
+      <class name="project_Automation.TestCase"/>
+    </classes>
+  </test> <!-- Test -->
+</suite> <!-- Suite -->
+
+
+
+
+Test	# Passed	# Skipped	# Retried	# Failed	Time (ms)	Included Groups	Excluded Groups
+Default suite
+Default test	4	0	0	0	195,439		
+Class	Method	Start	Time (ms)
+Default suite
+Default test — passed
+project_Automation.TestCase	SignUpTC02	1648617144401	21987
+	SignUpTC03	1648617183647	3312
+	SignUpTC04	1648617192280	1461
+	SignUpTC05	1648617169967	9362
+Default test
+project_Automation.TestCase#SignUpTC02
+
+back to summary
+project_Automation.TestCase#SignUpTC03
+
+back to summary
+project_Automation.TestCase#SignUpTC04
+
+back to summary
+project_Automation.TestCase#SignUpTC05
+
